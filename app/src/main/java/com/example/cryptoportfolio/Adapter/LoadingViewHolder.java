@@ -11,6 +11,6 @@ public class LoadingViewHolder extends RecyclerView.ViewHolder{
 
     public LoadingViewHolder(View itemView) {
         super(itemView);
-        progressBar = (ProgressBar)itemView.findViewById(R.id.progress_bar);
+        progressBar = itemView.findViewById(R.id.progress_bar);
     }
 }

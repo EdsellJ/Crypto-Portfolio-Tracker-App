@@ -33,53 +33,42 @@ public class MainActivity extends AppCompatActivity {
     Request request;
     SwipeRefreshLayout swipeRefreshLayout;
 
+    String API_KEY = "d652d94e-50d3-4c0e-8c2c-414e3c8989ed";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.coin_layout);
 
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.rootLayout);
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                loadFirst10Coin();
-            }
+        swipeRefreshLayout = findViewById(R.id.rootLayout);
+        swipeRefreshLayout.post(() -> loadFirst10Coin());
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            items.clear();
+            loadFirst10Coin();
+            setupAdapter();
         });
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                items.clear();
-                loadFirst10Coin();
-                setupAdatper();
-            }
-        });
-
-        recyclerView = (RecyclerView)findViewById(R.id.coinList);
+        recyclerView = findViewById(R.id.coinList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        setupAdatper();
+        setupAdapter();
 
     }
-     private void setupAdatper() {
+     private void setupAdapter() {
         adapter = new CoinAdapter(recyclerView, MainActivity.this,items);
         recyclerView.setAdapter(adapter);
-        adapter.setiLoadMore(new ILoadMore() {
-            @Override
-            public void onLoadMore() {
-                if (items.size() <= 500) {
-                    loadNext10Coin( );
-                } else {
-                    Toast.makeText(MainActivity.this, "Max items is 500", Toast.LENGTH_SHORT).show();
-                }
+        adapter.setiLoadMore(() -> {
+            if (items.size() <= 500) {
+                loadNext10Coin();
+            } else {
+                Toast.makeText(MainActivity.this, "Max items is 500", Toast.LENGTH_SHORT).show();
             }
         });
      }
 
-     // API_KEY = d652d94e-50d3-4c0e-8c2c-414e3c8989ed
-
      private void loadNext10Coin() {
         client = new OkHttpClient();
-        request = new Request.Builder().url("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=d652d94e-50d3-4c0e-8c2c-414e3c8989ed")
+        request = new Request.Builder().url(String.format("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"))
                 .build();
         swipeRefreshLayout.setRefreshing(true);
         client.newCall(request)
@@ -96,25 +85,20 @@ public class MainActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         List<CoinModel> newItems = gson.fromJson(body, new TypeToken<List<CoinModel>>(){}.getType());
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                items.addAll(newItems);
-                                adapter.setLoaded();
-                                adapter.updateData(items);
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
+                        runOnUiThread(() -> {
+                            items.addAll(newItems);
+                            adapter.setLoaded();
+                            adapter.updateData(items);
+                            swipeRefreshLayout.setRefreshing(false);
                         });
 
                     }
                 });
      }
 
-    // API_KEY = d652d94e-50d3-4c0e-8c2c-414e3c8989ed
-
      private void loadFirst10Coin() {
          client = new OkHttpClient();
-         request = new Request.Builder().url("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=d652d94e-50d3-4c0e-8c2c-414e3c8989ed")
+         request = new Request.Builder().url(String.format("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=d652d94e-50d3-4c0e-8c2c-414e3c8989ed"))
                  .build();
          swipeRefreshLayout.setRefreshing(true);
          client.newCall(request)
@@ -131,12 +115,7 @@ public class MainActivity extends AppCompatActivity {
                          Gson gson = new Gson();
                          List<CoinModel> newItems = gson.fromJson(body, new TypeToken<List<CoinModel>>(){}.getType());
 
-                         runOnUiThread(new Runnable() {
-                             @Override
-                             public void run() {
-                                 adapter.updateData(newItems);
-                             }
-                         });
+                         runOnUiThread(() -> adapter.updateData(newItems));
 
                      }
                  });
