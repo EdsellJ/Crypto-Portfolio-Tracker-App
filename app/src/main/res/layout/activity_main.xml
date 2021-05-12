@@ -1,105 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/txtVw_Track"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="Track"
-        android:textColor="#292929"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/rootLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <!-- User should be able to change this text from the portfolio settings button -->
-    <TextView
-        android:id="@+id/txtVw_PortfolioName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="12dp"
-        android:elevation="12dp"
-        android:fontFamily="sans-serif-condensed"
-        android:text="Main Portfolio"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="normal"
-        app:layout_constraintStart_toStartOf="@+id/button_MainPortfolio"
-        app:layout_constraintTop_toTopOf="@+id/button_MainPortfolio" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/coinList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <!-- Clickable set to false for now. Need to remove animation button presses -->
-    <Button
-        android:id="@+id/button_MainPortfolio"
-        android:layout_width="372dp"
-        android:layout_height="84dp"
-        android:layout_marginTop="56dp"
-        android:clickable="false"
-        app:backgroundTint="#5633ED"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        </androidx.recyclerview.widget.RecyclerView>
 
-    <!-- Placeholder value for now. Should update in real-time when connected to API -->
-    <TextView
-        android:id="@+id/txtVw_PortfolioValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="12dp"
-        android:elevation="12dp"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="$150,748.21"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/button_MainPortfolio"
-        app:layout_constraintStart_toStartOf="@+id/button_MainPortfolio" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
-    <!-- TODO: Utilize ellipses text for settings button  -->
-    <Button
-        android:id="@+id/button_PortfolioSettings"
-        android:layout_width="24dp"
-        android:layout_height="12dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="..."
-        android:textSize="12sp"
-        app:backgroundTint="#00FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/button_MainPortfolio"
-        app:layout_constraintTop_toTopOf="@+id/button_MainPortfolio" />
-
-    <!-- TODO: Remove shadow from button
-        Also, there could be a better way to do this.
-        Could relocate this button to the bottom or reuse this for app settings.
-      -->
-    <Button
-        android:id="@+id/button_AddTicker"
-        android:layout_width="40dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:shadowColor="#00FFFFFF"
-        android:text="+"
-        android:textColor="#000000"
-        app:backgroundTint="#00FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
