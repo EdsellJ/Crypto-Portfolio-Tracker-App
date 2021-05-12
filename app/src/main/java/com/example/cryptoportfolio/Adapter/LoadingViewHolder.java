@@ -7,6 +7,8 @@ import com.example.cryptoportfolio.R;
 
 public class LoadingViewHolder extends RecyclerView.ViewHolder{
 
+    // Loading layout shows progress bar when pulled to refresh
+
     public ProgressBar progressBar;
 
     public LoadingViewHolder(View itemView) {

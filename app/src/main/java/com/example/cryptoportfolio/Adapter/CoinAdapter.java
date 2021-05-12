@@ -14,6 +14,8 @@ import com.example.cryptoportfolio.Model.CoinModel;
 import com.example.cryptoportfolio.R;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -25,17 +27,23 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     int visibleThreshold = 5, lastVisibleItem, totalItemCount;
 
-    public CoinAdapter(RecyclerView recyclerView, Activity activity, List<CoinModel> items) {
+    public CoinAdapter(@NotNull RecyclerView recyclerView, Activity activity, List<CoinModel> items) {
         this.activity = activity;
         this.items = items;
 
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager)recyclerView.getLayoutManager();
+
+        // Listens for scrolling event
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                // item count on screen
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+
+                // if not loading, load more elements on screen
                 if (!isLoading && totalItemCount <= (lastVisibleItem+visibleThreshold)) {
                     if (iLoadMore != null)
                         iLoadMore.onLoadMore();
@@ -59,6 +67,8 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return new CoinViewHolder(view);
     }
 
+
+    // Binds new elements to list
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         CoinModel item = items.get(position);
@@ -71,7 +81,7 @@ public class CoinAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holderItem.twentyfour_hours_change.setText(item.getPercent_change_24h()+"%");
         holderItem.twentyfour_hours_change.setText(item.getPercent_change_7d()+"%");
 
-        // Load image
+        // Loads image
         Picasso.with(activity)
                 .load(new StringBuilder("https://res.coudinary.com/dxi90ksom/image/upload/")
                 .append(item.getSymbol().toLowerCase()).append(".png").toString())

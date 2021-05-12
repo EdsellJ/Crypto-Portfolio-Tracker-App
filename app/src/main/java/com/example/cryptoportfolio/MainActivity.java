@@ -41,23 +41,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.coin_layout);
 
         swipeRefreshLayout = findViewById(R.id.rootLayout);
+        // load first 10 coins
         swipeRefreshLayout.post(() -> loadFirst10Coin());
 
+        // clears list, loads first 10 coins, sets up adapter
         swipeRefreshLayout.setOnRefreshListener(() -> {
             items.clear();
             loadFirst10Coin();
             setupAdapter();
         });
 
+        // creates new linear layout to hold coin list
         recyclerView = findViewById(R.id.coinList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setupAdapter();
 
     }
+
      private void setupAdapter() {
         adapter = new CoinAdapter(recyclerView, MainActivity.this,items);
         recyclerView.setAdapter(adapter);
         adapter.setiLoadMore(() -> {
+
+            // loads up to first 500 coins from api
             if (items.size() <= 500) {
                 loadNext10Coin();
             } else {
@@ -67,10 +73,15 @@ public class MainActivity extends AppCompatActivity {
      }
 
      private void loadNext10Coin() {
+        // establish http client
         client = new OkHttpClient();
+
+        // request json data from api (still need to append api header to this)
         request = new Request.Builder().url(String.format("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"))
                 .build();
         swipeRefreshLayout.setRefreshing(true);
+
+        // send new request
         client.newCall(request)
                 .enqueue(new Callback() {
                     @Override
@@ -81,15 +92,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
 
+                        // parse json data from api
                         String body = response.body().string();
                         Gson gson = new Gson();
                         List<CoinModel> newItems = gson.fromJson(body, new TypeToken<List<CoinModel>>(){}.getType());
 
                         runOnUiThread(() -> {
-                            items.addAll(newItems);
+                            items.addAll(newItems); // add new items to list
                             adapter.setLoaded();
-                            adapter.updateData(items);
-                            swipeRefreshLayout.setRefreshing(false);
+                            adapter.updateData(items);  // update current items
+                            swipeRefreshLayout.setRefreshing(false); // notify that layout is not in refreshing state
                         });
 
                     }
@@ -97,10 +109,15 @@ public class MainActivity extends AppCompatActivity {
      }
 
      private void loadFirst10Coin() {
+         // establish http client
          client = new OkHttpClient();
+
+         // request json data from api (still need to append api header to this)
          request = new Request.Builder().url(String.format("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=d652d94e-50d3-4c0e-8c2c-414e3c8989ed"))
                  .build();
          swipeRefreshLayout.setRefreshing(true);
+
+         // send new request
          client.newCall(request)
                  .enqueue(new Callback() {
                      @Override
@@ -111,11 +128,12 @@ public class MainActivity extends AppCompatActivity {
                      @Override
                      public void onResponse(Call call, Response response) throws IOException {
 
+                         // parse json data from api
                          String body = response.body().string();
                          Gson gson = new Gson();
                          List<CoinModel> newItems = gson.fromJson(body, new TypeToken<List<CoinModel>>(){}.getType());
 
-                         runOnUiThread(() -> adapter.updateData(newItems));
+                         runOnUiThread(() -> adapter.updateData(newItems)); // update new items
 
                      }
                  });
